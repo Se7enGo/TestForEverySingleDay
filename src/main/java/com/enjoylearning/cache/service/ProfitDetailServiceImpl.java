@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Service
 public class ProfitDetailServiceImpl implements ProfitDetailService {
     @Autowired
-    PorfitDetailMapper mapper;
+    private PorfitDetailMapper mapper;
 
     @Override
     public BigDecimal getProfitAmount(String usercode) {

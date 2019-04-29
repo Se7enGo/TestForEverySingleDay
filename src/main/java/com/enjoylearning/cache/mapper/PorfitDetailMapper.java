@@ -2,13 +2,10 @@ package com.enjoylearning.cache.mapper;
 
 import com.enjoylearning.cache.entity.PorfitDetail;
 import com.enjoylearning.cache.entity.PorfitDetailKey;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
+
 
 public interface PorfitDetailMapper {
     /**

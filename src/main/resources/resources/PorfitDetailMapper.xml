@@ -79,7 +79,7 @@
       and usercode = #{usercode,jdbcType=CHAR}
   </update>
   
-  <select id="getProfitAmount" parameterType="java.lang.String" resultType="BigDecimal">
+  <select id="getProfitAmount" parameterType="java.lang.String" resultType="java.math.BigDecimal">
         SELECT SUM(t.`price`) FROM  `profitdetail` t
         WHERE t.`usercode` = #{usercode,jdbcType=CHAR};
   </select>

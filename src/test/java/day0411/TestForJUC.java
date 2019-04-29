@@ -1,12 +1,15 @@
 package day0411;
 
+import com.enjoylearning.cache.service.ProfitDetailServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,9 +27,62 @@ public class TestForJUC {
 
     private CountDownLatch countDownLatch = new CountDownLatch(this.threadNum);
 
-    private int threadNum = 10;
+    private int threadNum = 150;
 
     private volatile int count = 0;
+
+    @Autowired
+    private ProfitDetailServiceImpl profitDetailService;
+
+    @Test
+    public void testForDuoXiancheng(){
+
+        for (int i = 0;i < this.threadNum;i++){
+            new Thread(new ProfitAmount("u1001")).start();
+            countDownLatch.countDown();
+        }
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class ProfitAmount implements Runnable{
+
+        private String usercode;
+
+        public ProfitAmount(String usercode) {
+            this.usercode = usercode;
+        }
+
+
+
+        @Override
+        public void run() {
+
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            BigDecimal amount = profitDetailService.getProfitAmount(this.usercode);
+
+            System.out.println("usercode = " + this.usercode + " amount = " + amount);
+        }
+
+
+        public String getUsercode() {
+            return usercode;
+        }
+
+        public void setUsercode(String usercode) {
+            this.usercode = usercode;
+        }
+    }
 
     @Before
     public void initQueue() {
@@ -39,7 +95,7 @@ public class TestForJUC {
      * 生成一个 初始化数据库的sql文件
      */
     @Test
-    public void generateSQL(){
+    public void generateSQL() {
 
         /**
          * LOAD DATA local INFILE 'e:/insert.sql' INTO TABLE tenmillion(`categ_id`, `categ_fid`, `SortPath`, `address`, `p_identifier`, `pro_specification`, `name`, `description`, `add_date`, `picture_url`, `thumb_url`, `shop_url`, `shop_thumb_url`, `brand_id`, `unit`, `square_meters_unit`, `market_price`, `true_price`, `square_meters_price`);
@@ -48,13 +104,13 @@ public class TestForJUC {
         StringBuilder sb = new StringBuilder("");
 
         //生成 60 万笔订单
-        List<Integer> codeList = Stream.iterate(100001,a -> a+1).limit(600000).collect(Collectors.toList());
+        List<Integer> codeList = Stream.iterate(100001, a -> a + 1).limit(600000).collect(Collectors.toList());
         // 生成 10 中商品号
-        List<Integer> pCodeList = Stream.iterate(3001,a -> a+1).limit(10).collect(Collectors.toList());
+        List<Integer> pCodeList = Stream.iterate(3001, a -> a + 1).limit(10).collect(Collectors.toList());
 
         // 生成随机的商品价格
         // 生成 10 个用户ID
-        List<String> userList = Stream.iterate(1000 ,a -> a + 1).limit(10).map(a -> "u" + a).collect(Collectors.toList());
+        List<String> userList = Stream.iterate(1000, a -> a + 1).limit(10).map(a -> "u" + a).collect(Collectors.toList());
 
         Random random = new Random();
         int min = 1;
@@ -63,21 +119,26 @@ public class TestForJUC {
         double mind = 1.1;
         double maxd = 100000.1;
 
-        Random doubleRandom  = new Random(100000);
+        Random doubleRandom = new Random(100000);
 
         codeList.stream().forEach(a -> {
-            int randomInt = min + (int)(random.nextFloat() * (max - min));
-            int nextrandomInt = min + (int)(random.nextFloat() * (max - min));
-            sb.append(String.format("%s\t%s\t%s\t%s\t%s\t\r\n",a,pCodeList.get(randomInt),testForLocalTime(),(mind + (Double)(doubleRandom.nextDouble() * (maxd - mind))), userList.get(nextrandomInt)));
+            int randomInt = min + (int) (random.nextFloat() * (max - min));
+            int nextrandomInt = min + (int) (random.nextFloat() * (max - min));
+            sb.append(String.format("%s\t%s\t%s\t%s\t%s\t\r\n"
+                    , a
+                    , pCodeList.get(randomInt)
+                    , ""
+                    , (mind + (Double) (doubleRandom.nextDouble() * (maxd - mind)))
+                    , userList.get(nextrandomInt)));
         });
         //finalString = finalString.substring(0,finalString.lastIndexOf(","));
         //sb.replace(sb.lastIndexOf(","),sb.lastIndexOf(","),";");
         String finalSqlString = sb.toString();
 
         File file = new File("C:\\Users\\Alex\\Desktop\\finalSql.sql");
-        if(!file.exists()){
-            File parent  = file.getParentFile();
-            if(!parent.exists()){
+        if (!file.exists()) {
+            File parent = file.getParentFile();
+            if (!parent.exists()) {
                 file.mkdirs();
             }
             try {
@@ -95,9 +156,9 @@ public class TestForJUC {
         InputStreamReader isr = new InputStreamReader(new BufferedInputStream(new ByteArrayInputStream(finalSqlString.getBytes())));
 
         try {
-            outputStream =  new OutputStreamWriter(new FileOutputStream(file));
-            while ((bb = isr.read(characters)) > 0){
-                outputStream.write(characters,0,bb);
+            outputStream = new OutputStreamWriter(new FileOutputStream(file));
+            while ((bb = isr.read(characters)) > 0) {
+                outputStream.write(characters, 0, bb);
             }
             isr.close();
             outputStream.flush();
@@ -105,15 +166,15 @@ public class TestForJUC {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if(isr!= null){
+        } finally {
+            if (isr != null) {
                 try {
                     isr.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(outputStream != null){
+            if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
@@ -125,12 +186,14 @@ public class TestForJUC {
 
     }
 
-    public String  testForLocalTime(){
+    @Test
+    public void testForLocalTime() {
 
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatTime = localDateTime.format(dtf);
-       return formatTime;
+        System.out.println(formatTime);
+        // return formatTime;
     }
 
 
@@ -150,10 +213,10 @@ public class TestForJUC {
     }
 
     @Test
-    public void testVolatile(){
+    public void testVolatile() {
 
         this.threadNum = 2;
-        for (int i = 0;i< threadNum;i++){
+        for (int i = 0; i < threadNum; i++) {
 
             new Thread(new AddVolatileNum()).start();
             countDownLatch.countDown();
@@ -166,7 +229,7 @@ public class TestForJUC {
         System.out.println(count);
     }
 
-    private class AddVolatileNum implements Runnable{
+    private class AddVolatileNum implements Runnable {
 
 
         @Override
@@ -177,7 +240,7 @@ public class TestForJUC {
                 e.printStackTrace();
             }
             int i = 0;
-            while( i++ <= 10000){
+            while (i++ <= 10000) {
                 count++;
             }
         }
@@ -200,14 +263,14 @@ public class TestForJUC {
 
 
             while (true) {
-                    if(count < 1000){
-                        count++;
-                        long i = concurrentLinkedQueue.poll();
+                if (count < 1000) {
+                    count++;
+                    long i = concurrentLinkedQueue.poll();
 
-                        System.out.println("I am Thread " + name + " and I get Num " + i);
-                    }else{
-                        return;
-                    }
+                    System.out.println("I am Thread " + name + " and I get Num " + i);
+                } else {
+                    return;
+                }
 
 
             }

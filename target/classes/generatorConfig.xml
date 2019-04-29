@@ -82,17 +82,12 @@
 
         </javaClientGenerator>
 
-        <table tableName="hiveTable" domainObjectName="HiveTable"
+        <table tableName="profitdetail" domainObjectName="PorfitDetail"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>
 
-        <table tableName="hiveLocation" domainObjectName="HiveLocation"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
 
     </context>
 </generatorConfiguration>
