@@ -82,7 +82,7 @@
 
         </javaClientGenerator>
 
-        <table tableName="profitdetail" domainObjectName="PorfitDetail"
+        <table tableName="profitdetail" domainObjectName="ProfitDetail"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

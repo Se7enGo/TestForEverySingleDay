@@ -1,11 +1,8 @@
 package day0411;
 
 import com.enjoylearning.cache.service.ProfitDetailServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.*;
@@ -20,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+//@ContextConfiguration("classpath:applicationContext.xml")
 public class TestForJUC {
 
     private ConcurrentLinkedQueue<Long> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
@@ -31,14 +28,24 @@ public class TestForJUC {
 
     private volatile int count = 0;
 
-    @Autowired
+    private String usercode = "u1003";
+
+    //@Autowired
     private ProfitDetailServiceImpl profitDetailService;
+
+
+    @Test
+    public void testForEquals(){
+        String str = "23";
+        System.out.println(Long.valueOf(str).equals(23) );
+    }
+
 
     @Test
     public void testForDuoXiancheng(){
 
         for (int i = 0;i < this.threadNum;i++){
-            new Thread(new ProfitAmount("u1001")).start();
+            new Thread(new ProfitAmount(usercode)).start();
             countDownLatch.countDown();
         }
 
@@ -84,7 +91,7 @@ public class TestForJUC {
         }
     }
 
-    @Before
+    //@Before
     public void initQueue() {
 
         Stream.iterate(0l, a -> a + 1).limit(100000).parallel().forEach(i -> concurrentLinkedQueue.add(i));
@@ -94,7 +101,7 @@ public class TestForJUC {
     /**
      * 生成一个 初始化数据库的sql文件
      */
-    @Test
+    //@Test
     public void generateSQL() {
 
         /**
@@ -186,7 +193,7 @@ public class TestForJUC {
 
     }
 
-    @Test
+    //@Test
     public void testForLocalTime() {
 
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -197,7 +204,7 @@ public class TestForJUC {
     }
 
 
-    @Test
+    //@Test
     public void test01() {
         for (int i = 0; i < threadNum; i++) {
             new Thread(new DoSomething("Name + " + i)).start();
@@ -212,7 +219,7 @@ public class TestForJUC {
         System.out.println("一共取数 " + count + "次");
     }
 
-    @Test
+    //@Test
     public void testVolatile() {
 
         this.threadNum = 2;
