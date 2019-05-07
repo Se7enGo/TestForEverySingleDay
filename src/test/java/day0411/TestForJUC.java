@@ -3,6 +3,8 @@ package day0411;
 import com.enjoylearning.cache.service.ProfitDetailServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.*;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration("classpath:applicationContext.xml")
 public class TestForJUC {
 
     private ConcurrentLinkedQueue<Long> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
@@ -28,9 +30,9 @@ public class TestForJUC {
 
     private volatile int count = 0;
 
-    private String usercode = "u1003";
+    private String usercode = "u1001";
 
-    //@Autowired
+    @Autowired
     private ProfitDetailServiceImpl profitDetailService;
 
 
@@ -50,7 +52,7 @@ public class TestForJUC {
         }
 
         try {
-            Thread.sleep(20000);
+            Thread.currentThread().join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -65,19 +67,14 @@ public class TestForJUC {
             this.usercode = usercode;
         }
 
-
-
         @Override
         public void run() {
-
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             BigDecimal amount = profitDetailService.getProfitAmount(this.usercode);
-
             System.out.println("usercode = " + this.usercode + " amount = " + amount);
         }
 

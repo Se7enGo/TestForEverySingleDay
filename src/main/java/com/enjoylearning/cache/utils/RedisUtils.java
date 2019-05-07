@@ -17,6 +17,18 @@ public class RedisUtils {
     private RedisTemplate<String,Object> template;
 
 
+    //在redis中插入某个值
+    public void putDataToCache(String key,Object value){
+        BoundValueOperations<String ,Object> bvo = template.boundValueOps(key);
+        bvo.set(value);
+    }
+
+    //在redis中获取某个值
+    public Object getDataFromCache(String key){
+        BoundValueOperations<String,Object> bvo = template.boundValueOps(key);
+        return bvo.get();
+    }
+
     //
     public List<Object> getCacheList(String cacheKey){
         BoundListOperations boundListOperations = template.boundListOps(cacheKey);
@@ -49,16 +61,6 @@ public class RedisUtils {
         bound.put(key,value);
     }
 
-    //在redis中获取某个值
-    public void putDataToCache(String key,Object value){
-        BoundValueOperations<String ,Object> bvo = template.boundValueOps(key);
-        bvo.set(value);
-    }
 
-    //在redis 中删除某个值
-    public Object getDataFromCache(String key){
-        BoundValueOperations<String,Object> bvo = template.boundValueOps(key);
-        return bvo.get();
-    }
 
 }
