@@ -19,6 +19,58 @@
     http://www.springframework.org/schema/util/spring-util.xsd">
 
 
+    <!--redis配置-->
+    <!-- 连接池配置. -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!-- 连接池中最大连接数。高版本：maxTotal，低版本：maxActive -->
+        <property name="maxTotal" value="100" />
+        <!-- 连接池中最大空闲的连接数. -->
+        <property name="maxIdle" value="10" />
+        <!-- 连接池中最少空闲的连接数. -->
+        <!--<property name="minIdle" value="1" />
+        &lt;!&ndash; 当连接池资源耗尽时，调用者最大阻塞的时间，超时将跑出异常。单位，毫秒数;默认为-1.表示永不超时。高版本：maxWaitMillis，低版本：maxWait &ndash;&gt;
+        <property name="maxWaitMillis" value="5000" />
+        &lt;!&ndash; 连接空闲的最小时间，达到此值后空闲连接将可能会被移除。负值(-1)表示不移除. &ndash;&gt;
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        &lt;!&ndash; 对于“空闲链接”检测线程而言，每次检测的链接资源的个数。默认为3 &ndash;&gt;
+        <property name="numTestsPerEvictionRun" value="3" />
+        &lt;!&ndash; “空闲链接”检测线程，检测的周期，毫秒数。如果为负值，表示不运行“检测线程”。默认为-1. &ndash;&gt;
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />-->
+        <!-- testOnBorrow:向调用者输出“链接”资源时，是否检测是有有效，如果无效则从连接池中移除，并尝试获取继续获取。默认为false。建议保持默认值. -->
+        <!-- testOnReturn:向连接池“归还”链接时，是否检测“链接”对象的有效性。默认为false。建议保持默认值.-->
+        <!-- testWhileIdle:向调用者输出“链接”对象时，是否检测它的空闲超时；默认为false。如果“链接”空闲超时，将会被移除。建议保持默认值. -->
+        <!-- whenExhaustedAction:当“连接池”中active数量达到阀值时，即“链接”资源耗尽时，连接池需要采取的手段, 默认为1(0:抛出异常。1:阻塞，直到有可用链接资源。2:强制创建新的链接资源) -->
+    </bean>
+    <!-- Spring提供的Redis连接工厂 -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy">
+        <!-- 连接池配置. -->
+        <property name="poolConfig" ref="jedisPoolConfig" />
+        <!-- Redis服务主机. -->
+        <property name="hostName" value="localhost" />
+        <!-- Redis服务端口号. -->
+        <property name="port" value="6379" />
+        <!-- Redis服务连接密码. -->
+        <!-- <property name="password" value="${redis.password}" /> -->
+        <property name="database" value="2"/>
+        <!-- 连超时设置. -->
+        <property name="timeout" value="3000" />
+        <!-- 是否使用连接池. -->
+        <property name="usePool" value="true" />
+    </bean>
+    <!-- Spring提供的访问Redis类. -->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory" />
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+        </property>
+        <property name="valueSerializer">
+            <!-- <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" /> -->
+            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+
+        </property>
+        <property name="enableTransactionSupport" value="false"/>
+    </bean>
+
 <!-- 配置自定扫描的包 -->
     <context:component-scan base-package="com.enjoylearning.cache"></context:component-scan>
 
@@ -47,7 +99,7 @@
         <!-- 配置初始化大小、最小、最大 -->
         <property name="initialSize" value="1"/>
         <property name="minIdle" value="1"/>
-        <property name="maxActive" value="10000"/>
+        <property name="maxActive" value="10"/>
 
         <!-- 配置获取连接等待超时的时间 -->
         <property name="maxWait" value="60000"/>
@@ -61,7 +113,7 @@
         <property name="testWhileIdle" value="true"/>
 
         <!-- 这里建议配置为TRUE，防止取到的连接不可用 -->
-        <property name="testOnBorrow" value="true"/>
+        <property name="testOnBorrow" value="false"/>
         <property name="testOnReturn" value="false"/>
 
         <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
@@ -71,10 +123,10 @@
 
         <!-- 这里配置提交方式，默认就是TRUE，可以不用配置 -->
 
-        <property name="defaultAutoCommit" value="true"/>
+        <!--<property name="defaultAutoCommit" value="true"/>-->
 
         <!-- 验证连接有效与否的SQL，不同的数据配置不同 -->
-        <property name="validationQuery" value="select 1 "/>
+        <property name="validationQuery" value="select 'x' "/>
         <property name="filters" value="stat"/>
       <!--  <property name="proxyFilters">
             <list>
@@ -92,6 +144,7 @@
         <property name="dataSource" ref="dataSource"/>
         <qualifier value="transactionManager"/>
     </bean>
+
     <tx:annotation-driven  transaction-manager="transactionManager"/>
 
     <!--
@@ -144,57 +197,9 @@
     <!-- 在实际开发中通常都需配置 mvc:annotation-driven 标签 -->
     <!--<mvc:annotation-driven></mvc:annotation-driven>-->
 
+    <cache:annotation-driven/>
 
-    <!--redis配置-->
-    <!-- 连接池配置. -->
-    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <!-- 连接池中最大连接数。高版本：maxTotal，低版本：maxActive -->
-        <property name="maxTotal" value="100" />
-        <!-- 连接池中最大空闲的连接数. -->
-        <property name="maxIdle" value="10" />
-        <!-- 连接池中最少空闲的连接数. -->
-        <!--<property name="minIdle" value="1" />
-        &lt;!&ndash; 当连接池资源耗尽时，调用者最大阻塞的时间，超时将跑出异常。单位，毫秒数;默认为-1.表示永不超时。高版本：maxWaitMillis，低版本：maxWait &ndash;&gt;
-        <property name="maxWaitMillis" value="5000" />
-        &lt;!&ndash; 连接空闲的最小时间，达到此值后空闲连接将可能会被移除。负值(-1)表示不移除. &ndash;&gt;
-        <property name="minEvictableIdleTimeMillis" value="300000" />
-        &lt;!&ndash; 对于“空闲链接”检测线程而言，每次检测的链接资源的个数。默认为3 &ndash;&gt;
-        <property name="numTestsPerEvictionRun" value="3" />
-        &lt;!&ndash; “空闲链接”检测线程，检测的周期，毫秒数。如果为负值，表示不运行“检测线程”。默认为-1. &ndash;&gt;
-        <property name="timeBetweenEvictionRunsMillis" value="60000" />-->
-        <!-- testOnBorrow:向调用者输出“链接”资源时，是否检测是有有效，如果无效则从连接池中移除，并尝试获取继续获取。默认为false。建议保持默认值. -->
-        <!-- testOnReturn:向连接池“归还”链接时，是否检测“链接”对象的有效性。默认为false。建议保持默认值.-->
-        <!-- testWhileIdle:向调用者输出“链接”对象时，是否检测它的空闲超时；默认为false。如果“链接”空闲超时，将会被移除。建议保持默认值. -->
-        <!-- whenExhaustedAction:当“连接池”中active数量达到阀值时，即“链接”资源耗尽时，连接池需要采取的手段, 默认为1(0:抛出异常。1:阻塞，直到有可用链接资源。2:强制创建新的链接资源) -->
+    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg index="0" ref="redisTemplate"/>
     </bean>
-    <!-- Spring提供的Redis连接工厂 -->
-    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy">
-        <!-- 连接池配置. -->
-        <property name="poolConfig" ref="jedisPoolConfig" />
-        <!-- Redis服务主机. -->
-        <property name="hostName" value="localhost" />
-        <!-- Redis服务端口号. -->
-        <property name="port" value="6379" />
-        <!-- Redis服务连接密码. -->
-        <!-- <property name="password" value="${redis.password}" /> -->
-        <property name="database" value="2"/>
-        <!-- 连超时设置. -->
-        <property name="timeout" value="3000" />
-        <!-- 是否使用连接池. -->
-        <property name="usePool" value="true" />
-    </bean>
-    <!-- Spring提供的访问Redis类. -->
-    <bean id="jedisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
-        <property name="connectionFactory" ref="jedisConnectionFactory" />
-        <property name="keySerializer">
-            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-        </property>
-        <property name="valueSerializer">
-            <!-- <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" /> -->
-            <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
-            
-        </property>
-        <property name="enableTransactionSupport" value="false"/>
-    </bean>
-
 </beans>

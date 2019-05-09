@@ -11,21 +11,21 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class RedisUtils {
+public class RedisUtils<T> {
 
     @Resource
-    private RedisTemplate<String,Object> template;
+    private RedisTemplate<String,T> template;
 
 
     //在redis中插入某个值
-    public void putDataToCache(String key,Object value){
-        BoundValueOperations<String ,Object> bvo = template.boundValueOps(key);
+    public void putDataToCache(String key,T value){
+        BoundValueOperations<String ,T> bvo = template.boundValueOps(key);
         bvo.set(value);
     }
 
     //在redis中获取某个值
-    public Object getDataFromCache(String key){
-        BoundValueOperations<String,Object> bvo = template.boundValueOps(key);
+    public T getDataFromCache(String key){
+        BoundValueOperations<String,T> bvo = template.boundValueOps(key);
         return bvo.get();
     }
 

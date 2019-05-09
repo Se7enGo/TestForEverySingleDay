@@ -1,22 +1,15 @@
 package day0411;
 
-import com.enjoylearning.cache.service.ProfitDetailServiceImpl;
+import com.enjoylearning.cache.service.ProfitDetailService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
@@ -33,7 +26,7 @@ public class TestForJUC {
     private String usercode = "u1001";
 
     @Autowired
-    private ProfitDetailServiceImpl profitDetailService;
+    private ProfitDetailService profitDetailService;
 
 
     @Test
@@ -91,7 +84,7 @@ public class TestForJUC {
     //@Before
     public void initQueue() {
 
-        Stream.iterate(0l, a -> a + 1).limit(100000).parallel().forEach(i -> concurrentLinkedQueue.add(i));
+        //Stream.iterate(0l, a -> a + 1).limit(100000).parallel().forEach(i -> concurrentLinkedQueue.add(i));
 
     }
 
@@ -99,12 +92,12 @@ public class TestForJUC {
      * 生成一个 初始化数据库的sql文件
      */
     //@Test
-    public void generateSQL() {
+    /*public void generateSQL() {
 
-        /**
+        *//**
          * LOAD DATA local INFILE 'e:/insert.sql' INTO TABLE tenmillion(`categ_id`, `categ_fid`, `SortPath`, `address`, `p_identifier`, `pro_specification`, `name`, `description`, `add_date`, `picture_url`, `thumb_url`, `shop_url`, `shop_thumb_url`, `brand_id`, `unit`, `square_meters_unit`, `market_price`, `true_price`, `square_meters_price`);
          * 注意字段不再以逗号分割，以\t分割，条记录以\r\n分割。结果我插入10次数据，100W平均只要1分钟搞定。
-         */
+         *//*
         StringBuilder sb = new StringBuilder("");
 
         //生成 60 万笔订单
@@ -189,16 +182,16 @@ public class TestForJUC {
 
 
     }
-
+*/
     //@Test
-    public void testForLocalTime() {
+    /*public void testForLocalTime() {
 
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatTime = localDateTime.format(dtf);
         System.out.println(formatTime);
         // return formatTime;
-    }
+    }*/
 
 
     //@Test
