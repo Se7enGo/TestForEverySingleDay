@@ -1,11 +1,9 @@
 package com.enjoylearning.cache.service;
 
-import com.enjoylearning.cache.utils.RedisUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CacheServiceImpl implements CacheService {
+public class CacheServiceImpl  {/*
 
     @Autowired
     private RedisUtils redisUtil;
@@ -23,5 +21,5 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public void cacheRemove(String key) {
         redisUtil.clearCache(key);
-    }
+    }*/
 }

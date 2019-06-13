@@ -169,7 +169,7 @@
         <!-- 文件映射器，指定类文件 -->
         <!--<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>-->
         <!-- 自动扫描mapping.xml文件 -->
-        <property name="mapperLocations" value="classpath:resources/*.xml"></property>
+        <property name="mapperLocations" value="classpath:resources/ProfitDetailMapper.xml"></property>
     </bean>
 
     <!-- 配置视图解析器: 如何把 handler 方法返回值解析为实际的物理视图 -->

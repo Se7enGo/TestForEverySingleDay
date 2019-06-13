@@ -1,9 +1,7 @@
 package com.enjoylearning.cache.service;
 
-import com.enjoylearning.cache.mapper.ProfitDetailMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +14,8 @@ public class ProfitDetailServiceImpl implements ProfitDetailService {
     /*@Autowired
     private CacheServiceImpl cacheService;*/
 
-    @Autowired
-    private ProfitDetailMapper mapper;
+    /*@Autowired
+    private ProfitDetailMapper mapper;*/
 
     private static final String CACHE_NAME = "amount";
 
@@ -41,6 +39,7 @@ public class ProfitDetailServiceImpl implements ProfitDetailService {
             //如果有 就放在内存里 供后面的线程查询
             cacheService.cachePut(userCode,value2);
         }*/
-        return  mapper.getProfitAmount(userCode);
+       // return  mapper.getProfitAmount(userCode);
+        return null;
     }
 }
