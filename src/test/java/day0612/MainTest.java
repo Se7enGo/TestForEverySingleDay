@@ -2,10 +2,6 @@ package day0612;
 
 public class MainTest {
 
-
-
-
-
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode result = new ListNode(0);
 
