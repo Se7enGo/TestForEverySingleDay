@@ -1,17 +1,9 @@
 package com.enjoylearning.cache.utils;
 
-import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.BoundListOperations;
-import org.springframework.data.redis.core.BoundValueOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-
 @Component
-public class RedisUtils<T> {
+public class RedisUtils<T> {/*
 
     @Resource
     private RedisTemplate<String,T> template;
@@ -60,7 +52,7 @@ public class RedisUtils<T> {
         BoundHashOperations bound = template.boundHashOps(cacheKey);
         bound.put(key,value);
     }
-
+*/
 
 
 }

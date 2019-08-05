@@ -1,4 +1,4 @@
-package day0403;
+package com.enjoylearning.cache.day0403;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
