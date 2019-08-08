@@ -10,7 +10,7 @@ public class MainTest {
      */
     public static void main(String[] args) {
 
-        CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
         list.add("no1");
         list.add("no2");
         list.add("no3");
@@ -53,7 +53,13 @@ public class MainTest {
         list.add("no8");
 
         for (String s : list){
-            new Thread(() ->{list.clear();}).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    list.clear();
+                }
+            }).start();
+
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
