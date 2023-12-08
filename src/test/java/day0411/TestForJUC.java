@@ -25,6 +25,14 @@ public class TestForJUC {
     @Autowired
     private ProfitDetailService profitDetailService;
 
+    @Test
+    public void testForProcessers(){
+
+        //8核心 16线程
+        System.out.println(Runtime.getRuntime().availableProcessors());
+
+        System.out.println(Math.pow(2,31));
+    }
 
     @Test
     public void testForEquals(){
